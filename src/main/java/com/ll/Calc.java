@@ -7,15 +7,21 @@ public class Calc {
         String[] numbers;
 
         exp = exp.replace(" - ", " + -");
-        numbers = exp.split(" \\+ ");
 
-//        int sum = 0;
-//        for(String x : numbers) {
-//            sum += Integer.parseInt(x);
-//        }
+        if(exp.contains("+")) {
+            numbers = exp.split(" \\+ ");
 
-        return Arrays.stream(numbers)
-                .mapToInt(Integer::parseInt)
-                .sum();
+            return Arrays.stream(numbers)
+                    .mapToInt(Integer::parseInt)
+                    .sum();
+        } else if (exp.contains("*")) {
+            numbers = exp.split(" \\* ");
+
+            return Arrays.stream(numbers)
+                    .mapToInt(Integer::parseInt)
+                    .reduce((e1, e2) -> e1 * e2)
+                    .getAsInt();
+        }
+        throw new RuntimeException();
     }
 }
