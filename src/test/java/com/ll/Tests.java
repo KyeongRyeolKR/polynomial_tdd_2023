@@ -17,4 +17,10 @@ public class Tests {
     void t2() {
         assertThat(Calc.run("2 + 1")).isEqualTo(3);
     }
+
+    @Test
+    @DisplayName("100 + 210 = 310")
+    void t3() {
+        assertThat(Calc.run("100 + 210")).isEqualTo(310);
+    }
 }
