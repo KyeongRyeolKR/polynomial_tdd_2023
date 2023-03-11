@@ -1,23 +1,21 @@
 package com.ll;
 
+import java.util.Arrays;
+
 public class Calc {
     public static int run(String exp) {
         String[] numbers;
 
-        if(exp.contains("+")) {
-            numbers = exp.split(" \\+ ");
-        } else {
-            numbers = exp.split(" - ");
-        }
+        exp = exp.replace(" - ", " + -");
+        numbers = exp.split(" \\+ ");
 
-        int a = Integer.parseInt(numbers[0]);
-        int b = Integer.parseInt(numbers[1]);
+//        int sum = 0;
+//        for(String x : numbers) {
+//            sum += Integer.parseInt(x);
+//        }
 
-        if(exp.contains("+")) {
-            return a + b;
-        } else {
-            return a - b;
-        }
-
+        return Arrays.stream(numbers)
+                .mapToInt(Integer::parseInt)
+                .sum();
     }
 }

@@ -29,4 +29,10 @@ public class Tests {
     void t4() {
         assertThat(Calc.run("1 - 2")).isEqualTo(-1);
     }
+
+    @Test
+    @DisplayName("1 - 2 + 3 = 2")
+    void t5() {
+        assertThat(Calc.run("1 - 2 + 3")).isEqualTo(2);
+    }
 }
