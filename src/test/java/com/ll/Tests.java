@@ -47,4 +47,10 @@ public class Tests {
     void t7() {
         assertThat(Calc.run("10 * 10 * 10")).isEqualTo(1000);
     }
+
+    @Test
+    @DisplayName("10 * 10 * 10 * 20 * 20 = 400000")
+    void t8() {
+        assertThat(Calc.run("10 * 10 * 10 * 20 * 20")).isEqualTo(400000);
+    }
 }
