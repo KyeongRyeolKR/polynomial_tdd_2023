@@ -1,33 +1,53 @@
 package com.ll;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class Calc {
-    public static double run(String exp) {
-        String[] numbers;
+    public static int run(String exp) {
+        // 단일항이 입력되면 바로 리턴
+        if ( !exp.contains(" ") ) return Integer.parseInt(exp);
 
-        exp = exp.replace(" - ", " + -");
-        if(exp.contains("+")) {
-            numbers = exp.split(" \\+ ");
+        boolean needToMulti = exp.contains(" * ");
+        boolean needToPlus = exp.contains(" + ") || exp.contains(" - ");
 
-            return Arrays.stream(numbers)
-                    .mapToInt(Integer::parseInt)
-                    .sum();
-        } else if (exp.contains("*")) {
-            numbers = exp.split(" \\* ");
+        boolean needToCompound = needToMulti && needToPlus;
 
-            return Arrays.stream(numbers)
-                    .mapToInt(Integer::parseInt)
-                    .reduce((e1, e2) -> e1 * e2)
-                    .getAsInt();
-        } else if (exp.contains("/")) {
-            numbers = exp.split(" / ");
+        if ( needToCompound ) {
+            String[] bits = exp.split(" \\+ ");
 
-            return Arrays.stream(numbers)
-                    .mapToDouble(Double::parseDouble)
-                    .reduce((e1, e2) -> e1 / e2)
-                    .getAsDouble();
+            String newExp = Arrays.stream(bits)
+                    .mapToInt(Calc::run)
+                    .mapToObj(e -> e + "")
+                    .collect(Collectors.joining(" + "));
+
+            return run(newExp);
         }
-        throw new RuntimeException();
+        else if ( needToPlus ) {
+            exp = exp.replaceAll("- ", "+ -");
+
+            String[] bits = exp.split(" \\+ ");
+
+            int sum = 0;
+
+            for (int i = 0; i < bits.length; i++) {
+                sum += Integer.parseInt(bits[i]);
+            }
+
+            return sum;
+        }
+        else if ( needToMulti ) {
+            String[] bits = exp.split(" \\* ");
+
+            int sum = 1;
+
+            for (int i = 0; i < bits.length; i++) {
+                sum *= Integer.parseInt(bits[i]);
+            }
+
+            return sum;
+        }
+
+        throw new RuntimeException("올바른 계산식이 아닙니다.");
     }
 }
