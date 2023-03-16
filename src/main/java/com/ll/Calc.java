@@ -4,9 +4,18 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class Calc {
+    public static boolean debugMode = false;    // 디버깅용
+    public static int runCallCount = 0;         // 디버깅용
+
     public static int run(String exp) {
+        runCallCount++;
+
         exp = exp.trim();
         exp = stripOuterBrackets(exp);
+
+        if(debugMode) {
+            System.out.printf("exp(%d) : %s\n", runCallCount, exp);
+        }
 
         // 단일항이 입력되면 바로 리턴
         if (!exp.contains(" ")) return Integer.parseInt(exp);
