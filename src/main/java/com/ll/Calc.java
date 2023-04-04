@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class Calc {
-    public static boolean debugMode = false;    // 디버깅용
-    public static int runCallCount = 0;         // 디버깅용
+    public static boolean debug = true;
+    public static int runCallCount = 0;
 
     public static int run(String exp) {
         runCallCount++;
@@ -13,9 +13,15 @@ public class Calc {
         exp = exp.trim();
         exp = stripOuterBrackets(exp);
 
-        if(debugMode) {
+        // 만약에 음수괄호 패턴이면, 우리 해석기가 인식을 못하니, 해석할 수 있는 형태로 변경하자.
+        if ( isCaseMinusBracket(exp) ) {
+            exp = exp.substring(1) + " * -1";
+        }
+
+        if (debug) {
             System.out.printf("exp(%d) : %s\n", runCallCount, exp);
         }
+
 
         // 단일항이 입력되면 바로 리턴
         if (!exp.contains(" ")) return Integer.parseInt(exp);
@@ -72,20 +78,42 @@ public class Calc {
         throw new RuntimeException("올바른 계산식이 아닙니다.");
     }
 
+    private static boolean isCaseMinusBracket(String exp) {
+        // - 로 시작하는지
+        if ( exp.startsWith("-(") == false ) return false;
+
+        // 괄호로 감싸여져 있는지
+        int bracketsCount = 0;
+
+        for (int i = 0; i < exp.length(); i++) {
+            char c = exp.charAt(i);
+
+            if (c == '(') {
+                bracketsCount++;
+            } else if (c == ')') {
+                bracketsCount--;
+            }
+
+            if (bracketsCount == 0) {
+                if ( exp.length() - 1 == i ) return true;
+            }
+        }
+
+        return false;
+    }
+
     private static int findSplitPointIndexBy(String exp, char findChar) {
         int bracketsCount = 0;
 
         for (int i = 0; i < exp.length(); i++) {
             char c = exp.charAt(i);
 
-            if ( c == '(' ) {
+            if (c == '(') {
                 bracketsCount++;
-            }
-            else if ( c == ')' ) {
+            } else if (c == ')') {
                 bracketsCount--;
-            }
-            else if ( c == findChar ) {
-                if ( bracketsCount == 0 ) return i;
+            } else if (c == findChar) {
+                if (bracketsCount == 0) return i;
             }
         }
 
@@ -95,7 +123,7 @@ public class Calc {
     private static int findSplitPointIndex(String exp) {
         int index = findSplitPointIndexBy(exp, '+');
 
-        if ( index >= 0 ) return index;
+        if (index >= 0) return index;
 
         return findSplitPointIndexBy(exp, '*');
     }
